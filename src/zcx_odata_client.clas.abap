@@ -1,12 +1,10 @@
-class ZCX_REST_CLIENT definition
+class ZCX_ODATA_CLIENT definition
   public
-  inheriting from CX_STATIC_CHECK
+  inheriting from ZCX_REST_CLIENT
+  final
   create public .
 
 public section.
-
-  interfaces IF_T100_MESSAGE .
-  interfaces IF_T100_DYN_MSG .
 
   methods CONSTRUCTOR
     importing
@@ -18,7 +16,7 @@ ENDCLASS.
 
 
 
-CLASS ZCX_REST_CLIENT IMPLEMENTATION.
+CLASS ZCX_ODATA_CLIENT IMPLEMENTATION.
 
 
   METHOD constructor ##ADT_SUPPRESS_GENERATION.

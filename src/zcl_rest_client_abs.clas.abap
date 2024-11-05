@@ -1,9 +1,30 @@
-CLASS zcl_rest_client_abs DEFINITION
-PUBLIC
-  ABSTRACT
-  CREATE PROTECTED .
+*MIT License
+*
+*Copyright (c) 2024 BlueFunda
+*
+*Permission is hereby granted, free of charge, to any person obtaining a copy
+*of this software and associated documentation files (the "Software"), to deal
+*in the Software without restriction, including without limitation the rights
+*to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*copies of the Software, and to permit persons to whom the Software is
+*furnished to do so, subject to the following conditions:
+*
+*The above copyright notice and this permission notice shall be included in all
+*copies or substantial portions of the Software.
+*
+*THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+*SOFTWARE.
+class ZCL_REST_CLIENT_ABS definition
+  public
+  abstract
+  create public .
 
-  PUBLIC SECTION.
+public section.
   PROTECTED SECTION.
     METHODS get
       IMPORTING
@@ -52,12 +73,50 @@ PUBLIC
                 header        TYPE tihttpnvp
                 body          TYPE string OPTIONAL
                 timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
-      RETURNING VALUE(result) TYPE REF TO zif_rest_client=>ty_response.
+      RETURNING VALUE(result) TYPE REF TO zif_rest_client=>ty_response
+      RAISING   zcx_rest_client.
 ENDCLASS.
 
 
 
-CLASS zcl_rest_client_abs IMPLEMENTATION.
+CLASS ZCL_REST_CLIENT_ABS IMPLEMENTATION.
+
+
+  METHOD add_json_to_url.
+
+    "if url has ?, then don't concatenate with ? -- AND include &
+    IF url CA `?`.
+      result = |{ url }| & |&$format=json|.
+      RETURN.
+    ENDIF.
+    "if url has no ?, then concatenate with ?    -- AND exclude &
+    result = |{ url }| & |?$format=json|.
+
+  ENDMETHOD.
+
+
+  METHOD add_stats_to_url.
+    "if url has ?, then don't concatenate with ? -- AND include &
+    IF url CA `?`.
+      result = |{ url }| & |&sap-statistics=true|.
+      RETURN.
+    ENDIF.
+    "if url has no ?, then concatenate with ?    -- AND exclude &
+    result = |{ url }| & |?sap-statistics=true|.
+  ENDMETHOD.
+
+
+  METHOD add_xml_to_url.
+    "if url has ?, then don't concatenate with ? -- AND include &
+    IF url CA `?`.
+      result = |{ url }| & |&$format=xml|.
+      RETURN.
+    ENDIF.
+    "if url has no ?, then concatenate with ?    -- AND exclude &
+    result = |{ url }| & |?$format=xml|.
+  ENDMETHOD.
+
+
   METHOD delete.
     result = http_call(
                                 method = `DELETE`
@@ -77,28 +136,6 @@ CLASS zcl_rest_client_abs IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD post.
-    result = http_call(
-                                method = `POST`
-                                url = url
-                                header = header
-                                body = body
-                                timeout = timeout ).
-
-  ENDMETHOD.
-
-
-  METHOD put.
-    result = http_call(
-                                method = `PUT`
-                                url = url
-                                header = header
-                                body = body
-                                timeout = timeout ).
-
-  ENDMETHOD.
-
-
   METHOD http_call.
     DATA client TYPE REF TO if_http_client.
     cl_http_client=>create_internal(
@@ -110,8 +147,13 @@ CLASS zcl_rest_client_abs IMPLEMENTATION.
     OTHERS            = 3
     ).
     IF sy-subrc <> 0.
-      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-        WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+      RAISE EXCEPTION NEW zcx_rest_client( textid = VALUE scx_t100key(
+                                                           msgid = sy-msgid
+                                                           msgno = sy-msgno
+                                                           attr1 = sy-msgv1
+                                                           attr2 = sy-msgv2
+                                                           attr3 = sy-msgv3
+                                                           attr4 = sy-msgv4 ) ).
     ENDIF.
     client->request->set_method( method ).
     DATA(relative_url) = client->create_rel_url( path = url ).
@@ -137,8 +179,13 @@ CLASS zcl_rest_client_abs IMPLEMENTATION.
         OTHERS                     = 5
     ).
     IF sy-subrc <> 0.
-      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-        WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+      RAISE EXCEPTION NEW zcx_rest_client( textid = VALUE scx_t100key(
+                                                           msgid = sy-msgid
+                                                           msgno = sy-msgno
+                                                           attr1 = sy-msgv1
+                                                           attr2 = sy-msgv2
+                                                           attr3 = sy-msgv3
+                                                           attr4 = sy-msgv4 ) ).
     ENDIF.
     client->receive(
       EXCEPTIONS
@@ -155,8 +202,13 @@ CLASS zcl_rest_client_abs IMPLEMENTATION.
           message_class  = DATA(message_class)
           message_number = DATA(message_number)
       ).
-      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-        WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+      RAISE EXCEPTION NEW zcx_rest_client( textid = VALUE scx_t100key(
+                                                           msgid = sy-msgid
+                                                           msgno = sy-msgno
+                                                           attr1 = sy-msgv1
+                                                           attr2 = sy-msgv2
+                                                           attr3 = sy-msgv3
+                                                           attr4 = sy-msgv4 ) ).
     ENDIF.
 
     " capture response (body, status, reason, header fields)
@@ -176,40 +228,30 @@ CLASS zcl_rest_client_abs IMPLEMENTATION.
     ).
     IF sy-subrc <> 0.
       MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-        WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+        WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO DATA(client_close_error).
     ENDIF.
 
   ENDMETHOD.
-  METHOD add_json_to_url.
 
-    "if url has ?, then don't concatenate with ? -- AND include &
-    IF url CA `?`.
-      result = |{ url }| & |&$format=json|.
-      RETURN.
-    ENDIF.
-    "if url has no ?, then concatenate with ?    -- AND exclude &
-    result = |{ url }| & |?$format=json|.
+
+  METHOD post.
+    result = http_call(
+                                method = `POST`
+                                url = url
+                                header = header
+                                body = body
+                                timeout = timeout ).
 
   ENDMETHOD.
 
-  METHOD add_stats_to_url.
-    "if url has ?, then don't concatenate with ? -- AND include &
-    IF url CA `?`.
-      result = |{ url }| & |&sap-statistics=true|.
-      RETURN.
-    ENDIF.
-    "if url has no ?, then concatenate with ?    -- AND exclude &
-    result = |{ url }| & |?sap-statistics=true|.
-  ENDMETHOD.
 
-  METHOD add_xml_to_url.
-    "if url has ?, then don't concatenate with ? -- AND include &
-    IF url CA `?`.
-      result = |{ url }| & |&$format=xml|.
-      RETURN.
-    ENDIF.
-    "if url has no ?, then concatenate with ?    -- AND exclude &
-    result = |{ url }| & |?$format=xml|.
-  ENDMETHOD.
+  METHOD put.
+    result = http_call(
+                                method = `PUT`
+                                url = url
+                                header = header
+                                body = body
+                                timeout = timeout ).
 
+  ENDMETHOD.
 ENDCLASS.
