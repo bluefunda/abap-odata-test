@@ -167,7 +167,7 @@ CLASS zcl_rest_client_abs IMPLEMENTATION.
     code = result->code
     reason = result->reason ).
     client->response->get_header_fields( CHANGING fields = result->header ).
-    result->object ?= client->response.
+    result->response_object ?= client->response.
     " close client connection
     client->close(
       EXCEPTIONS

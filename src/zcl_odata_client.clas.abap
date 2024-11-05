@@ -124,12 +124,16 @@ CLASS zcl_odata_client IMPLEMENTATION.
   METHOD zif_odata_client~get_csrf_token.
 
     TRY.
-        DATA(url) = `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection`.
+        IF url IS NOT INITIAL.
+          DATA(input_url) = url.
+        ELSE.
+          input_url = `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection`.
+        ENDIF.
 
         DATA(response) = zif_odata_client~get(
-                                    url    = url
-                                    header = VALUE #( ( name = 'X-Csrf-Token' value = 'fetch' ) ) ).
-        READ TABLE response->header ASSIGNING FIELD-SYMBOL(<header>) WITH KEY name = 'x-csrf-token'.
+                                    url    = input_url
+                                    header = VALUE #( ( name = zif_odata_client=>x_csrf_token value = 'fetch' ) ) ).
+        READ TABLE response->header ASSIGNING FIELD-SYMBOL(<header>) WITH KEY name = zif_odata_client=>x_csrf_token.
         IF sy-subrc = 0.
           result = <header>-value.
         ENDIF.

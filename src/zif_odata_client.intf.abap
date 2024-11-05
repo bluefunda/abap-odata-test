@@ -1,4 +1,5 @@
 INTERFACE zif_odata_client PUBLIC .
+  CONSTANTS x_csrf_token TYPE string VALUE 'x-csrf-token'.
   METHODS get
     IMPORTING
               url           TYPE string
@@ -30,6 +31,7 @@ INTERFACE zif_odata_client PUBLIC .
     RETURNING VALUE(result) TYPE REF TO zif_rest_client=>ty_response
     RAISING   RESUMABLE(zcx_rest_client).
   METHODS get_csrf_token
+    IMPORTING url           TYPE string OPTIONAL
     RETURNING VALUE(result) TYPE string.
   METHODS set_json.
   METHODS set_xml.

@@ -1,10 +1,10 @@
 INTERFACE zif_rest_client PUBLIC .
   TYPES: BEGIN OF ty_response,
-           code   TYPE i,
-           reason TYPE string,
-           header TYPE tihttpnvp,
-           body   TYPE string,
-           object TYPE REF TO if_http_response,
+           code            TYPE i,
+           reason          TYPE string,
+           header          TYPE tihttpnvp,
+           body            TYPE string,
+           response_object TYPE REF TO if_http_response,
          END OF ty_response.
   METHODS get
     IMPORTING
