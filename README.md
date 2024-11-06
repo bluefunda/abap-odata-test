@@ -1,5 +1,4 @@
-# abap-odata-test
-ABAP OData Test Library:
+# ABAP OData Test Library
 ## Where to use
 You can use this in writing unit-tests or in ADT for console run or in standalone programs.
 ## Example:
