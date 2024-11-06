@@ -33,6 +33,7 @@ INTERFACE zif_odata_client PUBLIC .
               url           TYPE string
               header        TYPE tihttpnvp OPTIONAL
               body          TYPE string
+              csrf_token    TYPE string OPTIONAL
               timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
     RETURNING VALUE(result) TYPE REF TO zif_rest_client=>ty_response
     RAISING   RESUMABLE(zcx_odata_client).
@@ -41,6 +42,7 @@ INTERFACE zif_odata_client PUBLIC .
               url           TYPE string
               header        TYPE tihttpnvp OPTIONAL
               body          TYPE string
+              csrf_token    TYPE string OPTIONAL
               timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
     RETURNING VALUE(result) TYPE REF TO zif_rest_client=>ty_response
     RAISING   RESUMABLE(zcx_odata_client).
@@ -48,6 +50,7 @@ INTERFACE zif_odata_client PUBLIC .
     IMPORTING
               url           TYPE string
               header        TYPE tihttpnvp OPTIONAL
+              csrf_token    TYPE string OPTIONAL
               timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
     RETURNING VALUE(result) TYPE REF TO zif_rest_client=>ty_response
     RAISING   RESUMABLE(zcx_odata_client).

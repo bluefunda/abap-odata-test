@@ -28,6 +28,29 @@ INTERFACE zif_odata_test PUBLIC .
               csrf_fetch    TYPE abap_bool DEFAULT abap_false
     RETURNING VALUE(result) TYPE REF TO zif_odata_test
     RAISING   zcx_odata_client.
+  METHODS post
+    IMPORTING url           TYPE string
+              header        TYPE tihttpnvp OPTIONAL
+              body          TYPE string
+              timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
+              csrf_token    TYPE string OPTIONAL
+    RETURNING VALUE(result) TYPE REF TO zif_odata_test
+    RAISING   zcx_odata_client.
+  METHODS put
+    IMPORTING url           TYPE string
+              header        TYPE tihttpnvp OPTIONAL
+              body          TYPE string
+              timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
+              csrf_token    TYPE string OPTIONAL
+    RETURNING VALUE(result) TYPE REF TO zif_odata_test
+    RAISING   zcx_odata_client.
+  METHODS delete
+    IMPORTING url           TYPE string
+              header        TYPE tihttpnvp OPTIONAL
+              timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
+              csrf_token    TYPE string OPTIONAL
+    RETURNING VALUE(result) TYPE REF TO zif_odata_test
+    RAISING   zcx_odata_client.
   METHODS get_csrf_token
     RETURNING VALUE(result) TYPE string.
   METHODS assert_csrf_token_not_initial

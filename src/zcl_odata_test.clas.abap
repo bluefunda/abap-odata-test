@@ -19,18 +19,18 @@
 *LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 *OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 *SOFTWARE.
-class ZCL_ODATA_TEST definition
-  public
-  final
-  create private .
+CLASS zcl_odata_test DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PRIVATE .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_ODATA_TEST .
+    INTERFACES zif_odata_test .
 
-  class-methods NEW
-    returning
-      value(RESULT) type ref to ZIF_ODATA_TEST .
+    CLASS-METHODS new
+      RETURNING
+        VALUE(result) TYPE REF TO zif_odata_test .
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA test_client TYPE REF TO zif_odata_test.
@@ -40,7 +40,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ODATA_TEST IMPLEMENTATION.
+CLASS zcl_odata_test IMPLEMENTATION.
 
 
   METHOD new.
@@ -218,6 +218,85 @@ CLASS ZCL_ODATA_TEST IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD zif_odata_test~delete.
+
+    IF me->odata_client IS NOT BOUND.
+      me->odata_client = zcl_odata_client=>construct( ).
+    ENDIF.
+
+    test_client ?= me.
+    result = me->test_client.
+
+    TRY.
+        IF csrf_token IS NOT INITIAL.
+          DATA(csrf) = csrf_token.
+        ELSE.
+          csrf = zif_odata_test~get_csrf_token( ).
+        ENDIF.
+        response = odata_client->delete(
+                            url     = url
+                            header  = header
+                            csrf_token = csrf
+                            timeout = timeout ).
+      CATCH BEFORE UNWIND zcx_rest_client INTO DATA(exception).
+        RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
+    ENDTRY.
+
+  ENDMETHOD.
+
+  METHOD zif_odata_test~post.
+
+    IF me->odata_client IS NOT BOUND.
+      me->odata_client = zcl_odata_client=>construct( ).
+    ENDIF.
+
+    test_client ?= me.
+    result = me->test_client.
+
+    TRY.
+        IF csrf_token IS NOT INITIAL.
+          DATA(csrf) = csrf_token.
+        ELSE.
+          csrf = zif_odata_test~get_csrf_token( ).
+        ENDIF.
+        response = odata_client->post(
+                            url     = url
+                            header  = header
+                            body    = body
+                            csrf_token = csrf
+                            timeout = timeout ).
+      CATCH BEFORE UNWIND zcx_rest_client INTO DATA(exception).
+        RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
+    ENDTRY.
+
+  ENDMETHOD.
+
+  METHOD zif_odata_test~put.
+
+    IF me->odata_client IS NOT BOUND.
+      me->odata_client = zcl_odata_client=>construct( ).
+    ENDIF.
+
+    test_client ?= me.
+    result = me->test_client.
+
+    TRY.
+        IF csrf_token IS NOT INITIAL.
+          DATA(csrf) = csrf_token.
+        ELSE.
+          csrf = zif_odata_test~get_csrf_token( ).
+        ENDIF.
+        response = odata_client->put(
+                            url     = url
+                            header  = header
+                            body    = body
+                            csrf_token = csrf
+                            timeout = timeout ).
+      CATCH BEFORE UNWIND zcx_rest_client INTO DATA(exception).
+        RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
+    ENDTRY.
+
+  ENDMETHOD.
 
   METHOD zif_odata_test~get_csrf_token.
 
@@ -246,4 +325,5 @@ CLASS ZCL_ODATA_TEST IMPLEMENTATION.
     ENDTRY.
 
   ENDMETHOD.
+
 ENDCLASS.

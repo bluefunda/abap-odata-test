@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_ODATA_CLIENT_EX_1</CLSNAME>
+    <CLSNAME>ZCL_ODATA_CLIENT_EXAMPLE_1</CLSNAME>
     <LANGU>E</LANGU>
     <DESCRIPT>ODATA example -1</DESCRIPT>
     <STATE>1</STATE>

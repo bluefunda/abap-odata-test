@@ -1,4 +1,4 @@
-CLASS zcl_odata_client_ex_1 DEFINITION
+CLASS zcl_odata_client_example_1 DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC .
@@ -12,24 +12,23 @@ ENDCLASS.
 
 
 
-CLASS zcl_odata_client_ex_1 IMPLEMENTATION.
+CLASS zcl_odata_client_example_1 IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
 
     TRY.
         DATA(url) = `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json`.
-        "DATA(url) = `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/?$format=json`.
         DATA(odata_test_client) = zcl_odata_test=>new( ).
         out->write( odata_test_client->get_csrf_token( ) ).
         odata_test_client->get(
                                     url        = url
                                     csrf_fetch = abap_true
-                                 )->assert_http_200(
-                                 )->assert_json_content_type(
-                                 )->assert_csrf_token_not_initial(
-                                 )->assert_json_not_empty(
-                                 )->assert_json_path_exists( '/d/results/1/Title'
+                                 )->assert_http_200(                                "HTTP 200 assertion
+                                 )->assert_json_content_type(                       "'application/json; charset=utf-8'
+                                 )->assert_csrf_token_not_initial(                  "'x-csrf-token' fetch
+                                 )->assert_json_not_empty(                          "Empty JSON check
+                                 )->assert_json_path_exists( '/d/results/1/Title'   "JSON path conventions follow AJSON project
                               ).
 
         out->write( |INFO: | & |"GET | & |{ url }| & |"| & | passed | ).

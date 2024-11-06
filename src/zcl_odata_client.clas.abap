@@ -63,10 +63,17 @@ CLASS zcl_odata_client IMPLEMENTATION.
     IF stats = abap_true.
       lv_url = add_stats_to_url( url ).
     ENDIF.
+    IF csrf_token IS NOT INITIAL.
+      DATA(csrf) = csrf_token.
+    ELSE.
+      csrf = zif_odata_client~get_csrf_token( ).
+    ENDIF.
+    DATA(header_modified) = header.
+    INSERT VALUE #( name = zif_odata_client=>x_csrf_token value = csrf ) INTO TABLE header_modified.
     TRY.
         result ?= delete(
                     url = lv_url
-                    header = header
+                    header = header_modified
                     timeout = timeout ).
       CATCH zcx_rest_client INTO DATA(exception).
         RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
@@ -138,10 +145,18 @@ CLASS zcl_odata_client IMPLEMENTATION.
       lv_url = add_stats_to_url( url ).
     ENDIF.
 
+    IF csrf_token IS NOT INITIAL.
+      DATA(csrf) = csrf_token.
+    ELSE.
+      csrf = zif_odata_client~get_csrf_token( ).
+    ENDIF.
+    DATA(header_modified) = header.
+    INSERT VALUE #( name = zif_odata_client=>x_csrf_token value = csrf ) INTO TABLE header_modified.
+
     TRY.
         result ?= post(
                             url = lv_url
-                            header = header
+                            header = header_modified
                             body = body
                             timeout = timeout ).
       CATCH zcx_rest_client INTO DATA(exception).
@@ -165,10 +180,18 @@ CLASS zcl_odata_client IMPLEMENTATION.
       lv_url = add_stats_to_url( url ).
     ENDIF.
 
+    IF csrf_token IS NOT INITIAL.
+      DATA(csrf) = csrf_token.
+    ELSE.
+      csrf = zif_odata_client~get_csrf_token( ).
+    ENDIF.
+    DATA(header_modified) = header.
+    INSERT VALUE #( name = zif_odata_client=>x_csrf_token value = csrf ) INTO TABLE header_modified.
+
     TRY.
         result ?= put(
                            url = lv_url
-                           header = header
+                           header = header_modified
                            body = body
                            timeout = timeout ).
       CATCH zcx_rest_client INTO DATA(exception).
