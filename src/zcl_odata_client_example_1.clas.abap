@@ -1,10 +1,23 @@
-# ABAP OData Test Library
-## Where to use
-You can use this in writing unit-tests or in ADT for console run or in standalone programs.
-## Example:
-ADT console run
-```
-TRY.
+CLASS zcl_odata_client_example_1 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_odata_client_example_1 IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+    TRY.
         DATA(url) = `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json`.
         DATA(odata_test_client) = zcl_odata_test=>new( ).
         out->write( odata_test_client->get_csrf_token( ) ).
@@ -15,7 +28,7 @@ TRY.
                                  )->assert_json_content_type(                       "'application/json; charset=utf-8'
                                  )->assert_csrf_token_not_initial(                  "'x-csrf-token' fetch
                                  )->assert_json_not_empty(                          "Empty JSON check
-                                 )->assert_json_path_exists( '/d/results/1/Title'   "follows AJSON project
+                                 )->assert_json_path_exists( '/d/results/1/Title'   "JSON path conventions follow AJSON project
                               ).
 
         out->write( |INFO: | & |"GET | & |{ url }| & |"| & | passed | ).
@@ -31,4 +44,8 @@ TRY.
       CATCH cx_aunit_sbx_quit_test_method INTO DATA(uncaught_exception).
         out->write( |ERROR: | & |"GET | & |{ url }| & |"| & | failed| ).
     ENDTRY.
-```
+
+
+
+  ENDMETHOD.
+ENDCLASS.
