@@ -3,7 +3,7 @@
 You can use this in writing unit-tests or in ADT for console run or in standalone programs.
 ## Example:
 ADT console run
-```
+```abap
 TRY.
         DATA(url) = `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json`.
         DATA(odata_test_client) = zcl_odata_test=>new( ).
