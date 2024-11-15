@@ -72,8 +72,8 @@ CLASS zcl_odata_client IMPLEMENTATION.
     INSERT VALUE #( name = zif_odata_client=>x_csrf_token value = csrf ) INTO TABLE header_modified.
     TRY.
         result ?= delete(
-                    url = lv_url
-                    header = header_modified
+                    url     = lv_url
+                    header  = header_modified
                     timeout = timeout ).
       CATCH zcx_rest_client INTO DATA(exception).
         RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
@@ -98,9 +98,9 @@ CLASS zcl_odata_client IMPLEMENTATION.
 
     TRY.
         result ?= get(
-                                url = lv_url
-                                header = header
-                                timeout = timeout ).
+                        url     = lv_url
+                        header  = header
+                        timeout = timeout ).
       CATCH zcx_rest_client INTO DATA(exception).
         RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
     ENDTRY.
@@ -155,10 +155,10 @@ CLASS zcl_odata_client IMPLEMENTATION.
 
     TRY.
         result ?= post(
-                            url = lv_url
-                            header = header_modified
-                            body = body
-                            timeout = timeout ).
+                        url     = lv_url
+                        header  = header_modified
+                        body    = body
+                        timeout = timeout ).
       CATCH zcx_rest_client INTO DATA(exception).
         RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
     ENDTRY.
@@ -190,10 +190,10 @@ CLASS zcl_odata_client IMPLEMENTATION.
 
     TRY.
         result ?= put(
-                           url = lv_url
-                           header = header_modified
-                           body = body
-                           timeout = timeout ).
+                        url     = lv_url
+                        header  = header_modified
+                        body    = body
+                        timeout = timeout ).
       CATCH zcx_rest_client INTO DATA(exception).
         RAISE EXCEPTION NEW zcx_odata_client( previous = exception ).
     ENDTRY.

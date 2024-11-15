@@ -20,12 +20,29 @@
 *OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 *SOFTWARE.
 INTERFACE zif_odata_test PUBLIC .
+  DATA response TYPE REF TO zif_rest_client=>ty_response.
+  TYPES: BEGIN OF ty_stats,
+           name  TYPE string,
+           value TYPE string,
+           desc  TYPE string,
+         END OF ty_stats,
+         t_stats TYPE SORTED TABLE OF ty_stats WITH UNIQUE KEY name.
+
+  METHODS perf_stats
+    RETURNING VALUE(result) TYPE t_stats.
+  TYPES: BEGIN OF ty_vars,
+           key   TYPE string,
+           value TYPE string,
+         END OF ty_vars,
+         t_vars TYPE TABLE OF ty_vars.
 
   METHODS get
     IMPORTING url           TYPE string
               header        TYPE tihttpnvp OPTIONAL
               timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
               csrf_fetch    TYPE abap_bool DEFAULT abap_false
+              stats         TYPE abap_bool DEFAULT abap_true
+              vars          TYPE t_vars OPTIONAL
     RETURNING VALUE(result) TYPE REF TO zif_odata_test
     RAISING   zcx_odata_client.
   METHODS post
@@ -34,6 +51,7 @@ INTERFACE zif_odata_test PUBLIC .
               body          TYPE string
               timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
               csrf_token    TYPE string OPTIONAL
+              stats         TYPE abap_bool DEFAULT abap_true
     RETURNING VALUE(result) TYPE REF TO zif_odata_test
     RAISING   zcx_odata_client.
   METHODS put
@@ -42,6 +60,7 @@ INTERFACE zif_odata_test PUBLIC .
               body          TYPE string
               timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
               csrf_token    TYPE string OPTIONAL
+              stats         TYPE abap_bool DEFAULT abap_true
     RETURNING VALUE(result) TYPE REF TO zif_odata_test
     RAISING   zcx_odata_client.
   METHODS delete
@@ -49,6 +68,7 @@ INTERFACE zif_odata_test PUBLIC .
               header        TYPE tihttpnvp OPTIONAL
               timeout       TYPE i DEFAULT if_http_client=>co_timeout_default
               csrf_token    TYPE string OPTIONAL
+              stats         TYPE abap_bool DEFAULT abap_true
     RETURNING VALUE(result) TYPE REF TO zif_odata_test
     RAISING   zcx_odata_client.
   METHODS get_csrf_token
@@ -71,6 +91,9 @@ INTERFACE zif_odata_test PUBLIC .
     RETURNING VALUE(result) TYPE REF TO zif_odata_test.
   METHODS assert_json_path_exists
     IMPORTING json_path     TYPE string
+    RETURNING VALUE(result) TYPE REF TO zif_odata_test.
+  METHODS assert_total_time
+    IMPORTING time          TYPE i "in milliseconds
     RETURNING VALUE(result) TYPE REF TO zif_odata_test.
   METHODS get_json_path_value
     IMPORTING json_path     TYPE string
